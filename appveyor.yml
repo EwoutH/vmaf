@@ -1,21 +1,9 @@
-os: Visual Studio 2019
+image: Visual Studio 2019
 
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
   LDFLAGS: -static-libgcc -static-libstdc++
   matrix:
-    #- arch: x86
-    #  compiler: msvc2015
-    #- arch: x64
-    #  compiler: msvc2015
-    #- arch: x86
-    #  compiler: msvc2017
-    #- arch: x64
-    #  compiler: msvc2017
-    #- arch: x86
-    #  compiler: msvc2019
-    #- arch: x64
-    #  compiler: msvc2019
     - arch: x86
       MSYSTEM: MINGW32
       CC: ccache i686-w64-mingw32-gcc
@@ -26,24 +14,15 @@ environment:
       CC: ccache x86_64-w64-mingw32-gcc
       CXX: ccache x86_64-w64-mingw32-g++
 
-platform:
-  - x64
-
 install:
   - set "PATH=C:\msys64\mingw64\bin;C:\msys64\mingw32\bin;C:\msys64\usr\bin;%PATH%"
   - set MSYS2_PATH_TYPE=inherit
   # Download ninja and meson
   - pacman -Syyuu --ask=20 --noconfirm --noprogressbar --needed
   - pacman -Sy --ask=20 --noconfirm --noprogressbar --needed mingw-w64-x86_64-ninja mingw-w64-x86_64-meson
-  #- set CFLAGS=/D_TIMESPEC_DEFINED /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  # Set up the build environment
-  - |
-    if "%compiler%"=="msvc2015" ( call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %arch% )
-    if "%compiler%"=="msvc2017" ( call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch% )
-    if "%compiler%"=="msvc2019" ( call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch% )
 
 build_script:
-  - echo Building on %arch% with %compiler%
+  - echo Building on %arch%
   - set "CFLAGS=-static %CFLAGS%"
   - set "CXXFLAGS=-static %CXXFLAGS%"
   - cd libvmaf
